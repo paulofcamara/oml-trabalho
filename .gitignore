@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.whl
+*.egg
+*.egg-info/
+dist/
+build/
+*.manifest
+*.spec
+
+# Conda
+*.conda
+*.env
+*.venv
+
+# VSCode
+*.code-workspace
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Docker
+*.dockerignore
+Dockerfile
+.dockerignore

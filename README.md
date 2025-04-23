@@ -26,6 +26,11 @@ Os componentes que vão ser avaliados neste projecto são:
 
 Garantam que tanto o repositório do github como o package no github estão ambos públicos!
 
+### Informações do Autor
+
+Este projeto foi desenvolvido por **Paulo Camara**.  
+Email para contato: [paulo.f.camara@gmail.com](mailto:paulo.f.camara@gmail.com)
+
 ### Data limite de entrega
 
 01/05/2025
