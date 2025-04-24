@@ -1,0 +1,19 @@
+name: oml-trabalho
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - scikit-learn
+  - pandas
+  - mlflow
+  - fastapi
+  - uvicorn[standard]
+  - ipykernel
+  - pytest
+  - pydantic
+  - cloudpickle
+  - numpy
+  - matplotlib
+  - requests
+  - pip:
+      - python-dotenv

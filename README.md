@@ -26,6 +26,23 @@ Os componentes que vão ser avaliados neste projecto são:
 
 Garantam que tanto o repositório do github como o package no github estão ambos públicos!
 
+## Quick-Start
+
+### Criar e ativar o ambiente Conda
+
+```bash
+conda env create -f conda.yaml
+conda activate oml-trabalho
+```
+
+### Instalar dependências com pip (opcional)
+
+Para utilizadores sem Conda:
+
+```bash
+pip install -r requirements.txt
+```
+
 ### Informações do Autor
 
 Este projeto foi desenvolvido por **Paulo Camara**.  
