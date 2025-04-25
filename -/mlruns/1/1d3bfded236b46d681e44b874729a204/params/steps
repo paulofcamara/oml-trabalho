@@ -1,0 +1,2 @@
+[('Classifier', RandomForestClassifier(class_weight='balanced', n_estimators=200,
+                       random_state=42))]
