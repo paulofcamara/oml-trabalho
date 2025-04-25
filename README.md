@@ -2,7 +2,7 @@
 
 ## Rumos Bank going live
 
-The Rumos Bank é um banco que tem perdido bastante dinheiro devido à quantidade de créditos que fornece e que não são pagos dentro do prazo devido. 
+O Rumos Bank é um banco que tem perdido bastante dinheiro devido à quantidade de créditos que fornece e que não são pagos dentro do prazo devido. 
 
 Depois do banco te contratar, como data scientist de topo, para ajudares a prever os clientes que não irão cumprir os prazos, os resultados exploratórios iniciais são bastante promissores!
 
@@ -25,6 +25,39 @@ Os componentes que vão ser avaliados neste projecto são:
 * O container do serviço é built, testado e enviado para um container registry num pipeline de CICD
 
 Garantam que tanto o repositório do github como o package no github estão ambos públicos!
+
+## Estrutura do Projeto
+
+```
+.
+├── conda.yaml              # Definição do ambiente Conda
+├── requirements.txt        # Dependências Python
+├── data/                   # Dados do projeto
+│   └── lending_data.csv    # Dataset do banco
+├── mlruns/                 # Diretório central do MLflow para tracking
+├── notebooks/             
+│   ├── rumos_bank_lending_prediction.ipynb      # Notebook principal
+│   ├── loan_default_pipeline_mlflow.ipynb       # Pipeline com MLflow
+│   └── serve/                                   # Notebooks para teste do serviço
+├── src/
+│   └── mlflow_initializer.py                    # Configuração centralizada do MLflow
+└── tests/                  # Testes do projeto
+```
+
+## Configuração do MLflow
+
+O projeto utiliza MLflow para tracking de experimentos, com as seguintes configurações:
+
+- Tracking URI: `file://{PROJECT_ROOT}/mlruns`
+- Experiment Name: "lending_experiment"
+- Local Model Registry na pasta `mlruns`
+
+Para inicializar o MLflow em notebooks:
+
+```python
+from src.mlflow_initializer import initialize_mlflow
+initialize_mlflow()
+```
 
 ## Quick-Start
 
