@@ -1,11 +1,15 @@
-from fastapi import FastAPI, HTTPException
-import pandas as pd
-from mlflow_initializer import (
-    initialize_mlflow, load_production_model, load_config
-)
-import uvicorn
-from pydantic import BaseModel
 from typing import Dict
+
+import pandas as pd
+import uvicorn
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+from mlflow_initializer import (
+    initialize_mlflow,
+    load_production_model,
+    load_config,
+)
 
 # Initialize FastAPI app
 app = FastAPI(title="Bank Lending Prediction Service")

@@ -15,17 +15,17 @@ def initialize_mlflow():
     mlflow.set_tracking_uri(config['mlflow']['tracking_uri'])
 
     # Set the experiment name
-    EXPERIMENT_NAME = "bank_lending_prediction"
+    experiment_name = "bank_lending_prediction"
 
     # Create or get the experiment
-    experiment = mlflow.get_experiment_by_name(EXPERIMENT_NAME)
+    experiment = mlflow.get_experiment_by_name(experiment_name)
     if experiment is None:
-        experiment_id = mlflow.create_experiment(EXPERIMENT_NAME)
+        experiment_id = mlflow.create_experiment(experiment_name)
     else:
         experiment_id = experiment.experiment_id
 
     # Set as active experiment
-    mlflow.set_experiment(EXPERIMENT_NAME)
+    mlflow.set_experiment(experiment_name)
 
     return experiment_id
 
