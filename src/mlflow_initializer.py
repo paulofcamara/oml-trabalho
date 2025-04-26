@@ -1,10 +1,11 @@
-import os
 import json
 import mlflow
+
 
 def load_config():
     with open('config/app.json', 'r') as f:
         return json.load(f)
+
 
 def initialize_mlflow():
     # Load configuration
@@ -27,6 +28,7 @@ def initialize_mlflow():
     mlflow.set_experiment(EXPERIMENT_NAME)
     
     return experiment_id
+
 
 def load_production_model():
     """

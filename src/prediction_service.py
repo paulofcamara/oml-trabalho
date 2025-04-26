@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException
 import pandas as pd
-import numpy as np
 from mlflow_initializer import initialize_mlflow, load_production_model, load_config
 import uvicorn
 from pydantic import BaseModel
@@ -14,13 +13,16 @@ config = load_config()
 initialize_mlflow()
 model = load_production_model()
 
+
 class PredictionRequest(BaseModel):
     features: Dict[str, float]
+
 
 class PredictionResponse(BaseModel):
     prediction: int
     probability: float
     threshold: float = 0.5
+
 
 @app.post("/predict", response_model=PredictionResponse)
 async def predict(request: PredictionRequest):
@@ -30,7 +32,8 @@ async def predict(request: PredictionRequest):
         
         # Make prediction
         prediction_proba = model.predict_proba(df)
-        probability = prediction_proba[0][1]  # Probabilidade da classe positiva (1)
+        # Probability of positive class (1)
+        probability = prediction_proba[0][1]
         prediction = int(probability >= 0.5)
         
         return PredictionResponse(
@@ -41,12 +44,21 @@ async def predict(request: PredictionRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "model": "bank_lending_model"}
 
+
 if __name__ == "__main__":
     # Get server configuration
     server_config = config['server']
-    print(f"Starting prediction service on {server_config['host']}:{server_config['port']}")
-    uvicorn.run(app, host=server_config['host'], port=server_config['port'])
+    print(
+        f"Starting prediction service on {server_config['host']}:"
+        f"{server_config['port']}"
+    )
+    uvicorn.run(
+        app,
+        host=server_config['host'],
+        port=server_config['port']
+    )
