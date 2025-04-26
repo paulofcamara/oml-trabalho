@@ -57,7 +57,9 @@ async def health_check():
 
 
 if __name__ == "__main__":
-    # Get server configuration
+    """ 
+    Get server configuration
+    """
     server_config = config['server']
     print(
         f"Starting prediction service on {server_config['host']}:"

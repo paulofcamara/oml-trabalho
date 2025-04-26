@@ -32,7 +32,7 @@ def initialize_mlflow():
 
 def load_production_model():
     """
-    Load the production model from MLflow model registry
+    Load the production model from MLflow model registry.
     """
     config = load_config()
     model_name = config['model']['name']
