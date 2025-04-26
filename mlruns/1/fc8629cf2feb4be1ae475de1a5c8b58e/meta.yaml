@@ -1,0 +1,15 @@
+artifact_uri: file:../mlruns/1/fc8629cf2feb4be1ae475de1a5c8b58e/artifacts
+end_time: 1745672493843
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+name: ''
+run_id: fc8629cf2feb4be1ae475de1a5c8b58e
+run_uuid: fc8629cf2feb4be1ae475de1a5c8b58e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745672492832
+status: 3
+tags: []
+user_id: pfcamara
