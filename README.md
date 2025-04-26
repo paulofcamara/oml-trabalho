@@ -8,7 +8,7 @@ Depois do banco te contratar, como data scientist de topo, para ajudares a preve
 
 Mas o banco está algo receoso, já que teve uma má experiência anterior com uma equipa de data scientists, em que a transição dos resultados iniciais exploratórios até de facto conseguirem ter algo em produção durou cerca de 6 meses, bem acima da estimativa inicial.
 
-Por causa desta prévia má experiência, o banco desta vez quer ter garantias que a passagem dos resultados iniciais para produção é feita de forma mais eficiente. O objetivo é que a equipa de engenharia consegue colocar o vosso modelo em produção em dias em vez de meses!
+Por causa desta prévia má experiência, o banco desta vez quer ter garantias que a passagem dos resultados iniciais para produção é feita de forma mais eficiente. O objetivo é que a equipa de engenharia consiga colocar o vosso modelo em produção em dias em vez de meses!
 
 ## Avaliação
 
@@ -40,7 +40,8 @@ Garantam que tanto o repositório do github como o package no github estão ambo
 │   ├── loan_default_pipeline_mlflow.ipynb       # Pipeline com MLflow
 │   └── serve/                                   # Notebooks para teste do serviço
 ├── src/
-│   └── mlflow_initializer.py                    # Configuração centralizada do MLflow
+│   ├── mlflow_initializer.py                    # Configuração centralizada do MLflow
+│   └── prediction_service.py                   # Serviço de predição
 └── tests/                  # Testes do projeto
 ```
 
@@ -48,16 +49,33 @@ Garantam que tanto o repositório do github como o package no github estão ambo
 
 O projeto utiliza MLflow para tracking de experimentos, com as seguintes configurações:
 
-- Tracking URI: `file://{PROJECT_ROOT}/mlruns`
-- Experiment Name: "lending_experiment"
-- Local Model Registry na pasta `mlruns`
+- Tracking URI: `http://localhost:5000` (servidor remoto containerizado)
+- Experiment Name: "bank_lending_prediction"
+- Model Registry gerido remotamente no servidor MLflow
 
 Para inicializar o MLflow em notebooks:
 
 ```python
-from src.mlflow_initializer import initialize_mlflow
-initialize_mlflow()
+import mlflow
+mlflow.set_tracking_uri("http://localhost:5000")
+mlflow.set_experiment("bank_lending_prediction")
 ```
+
+## Serviço de Predição
+
+O serviço de predição está containerizado e pode ser acessado via API. Para utilizá-lo:
+
+1. Certifique-se de que o serviço está em execução:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. Envie requisições para o endpoint de predição:
+   ```bash
+   curl -X POST http://localhost:8000/predict -H "Content-Type: application/json" -d '{"data": [[30, 2, 1, 20000, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]}'
+   ```
+
+3. O serviço retornará a predição do modelo em formato JSON.
 
 ## Quick-Start
 
