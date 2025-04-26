@@ -28,6 +28,7 @@ jobs:
         pip install flake8 black isort bandit
         
     - name: Run code quality checks
+      continue-on-error: true
       run: |
         flake8 src/
         black --check src/

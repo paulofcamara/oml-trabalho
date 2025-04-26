@@ -5,7 +5,8 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from mlflow_initializer import initialize_mlflow, load_config, load_production_model
+from mlflow_initializer import initialize_mlflow, load_config
+from mlflow_initializer import load_production_model
 
 # Initialize FastAPI app
 app = FastAPI(title="Bank Lending Prediction Service")
