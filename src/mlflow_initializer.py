@@ -41,4 +41,3 @@ def load_production_model():
     model = mlflow.pyfunc.load_model(f"models:/{model_name}@Production")
 
     return model
-
