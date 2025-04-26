@@ -1,7 +1,5 @@
 # Avaliação do módulo de Operacionalização de Machine Learning - Projecto Individual
 
-> **Status**: ✅ Project Completed and Ready for Submission
-
 ## Rumos Bank going live
 
 O Rumos Bank é um banco que tem perdido bastante dinheiro devido à quantidade de créditos que fornece e que não são pagos dentro do prazo devido. 
