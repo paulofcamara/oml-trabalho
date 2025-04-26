@@ -1,5 +1,9 @@
 name: CI/CD Pipeline
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches: [ main ]
@@ -84,5 +88,5 @@ jobs:
         context: .
         push: true
         tags: |
-          ghcr.io/${{ github.repository }}/prediction-service:latest
-          ghcr.io/${{ github.repository }}/prediction-service:${{ github.sha }}
+          ghcr.io/paulofcamara/oml-trabalho/prediction-service:latest
+          ghcr.io/paulofcamara/oml-trabalho/prediction-service:${{ github.sha }}
