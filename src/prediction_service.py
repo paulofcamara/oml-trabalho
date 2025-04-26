@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
 import pandas as pd
-from mlflow_initializer import initialize_mlflow, load_production_model, load_config
+from mlflow_initializer import (
+    initialize_mlflow, load_production_model, load_config
+)
 import uvicorn
 from pydantic import BaseModel
 from typing import Dict
@@ -29,13 +31,13 @@ async def predict(request: PredictionRequest):
     try:
         # Convert input features to DataFrame
         df = pd.DataFrame([request.features])
-        
+
         # Make prediction
         prediction_proba = model.predict_proba(df)
         # Probability of positive class (1)
         probability = prediction_proba[0][1]
         prediction = int(probability >= 0.5)
-        
+
         return PredictionResponse(
             prediction=prediction,
             probability=float(probability),
