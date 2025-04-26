@@ -41,9 +41,40 @@ Garantam que tanto o repositório do github como o package no github estão ambo
 │   └── serve/                                   # Notebooks para teste do serviço
 ├── src/
 │   ├── mlflow_initializer.py                    # Configuração centralizada do MLflow
-│   └── prediction_service.py                   # Serviço de predição
-└── tests/                  # Testes do projeto
+│   └── prediction_service.py                    # Serviço de predição
+├── tests/                  # Testes do projeto
+└── .github/
+    └── workflows/          # Workflows do GitHub Actions
+        └── ci-cd.yml      # Pipeline de CI/CD
 ```
+
+## Pipeline de CI/CD
+
+O projeto possui uma pipeline de CI/CD automatizada usando GitHub Actions, que inclui:
+
+### Etapas de Qualidade
+- Verificação de código com flake8
+- Formatação de código com black
+- Ordenação de imports com isort
+- Análise de segurança com bandit
+
+### Testes e Build
+- Execução de testes unitários com pytest
+- Build da imagem Docker
+- Teste do container em execução
+- Scan de vulnerabilidades com Trivy
+
+### Deploy
+- Push da imagem para GitHub Container Registry (GHCR)
+- Tagging automático com versão git e latest
+- Controle de versão e rastreabilidade
+
+Para visualizar o status da pipeline:
+1. Acesse a aba "Actions" no GitHub
+2. As execuções são ativadas automaticamente em:
+   - Push para branch principal
+   - Pull Requests
+   - Tags
 
 ## Configuração do MLflow
 
@@ -63,36 +94,69 @@ mlflow.set_experiment("bank_lending_prediction")
 
 ## Serviço de Predição
 
-O serviço de predição está containerizado e pode ser acessado via API. Para utilizá-lo:
+O serviço de predição está containerizado e disponível no GitHub Container Registry. Para utilizá-lo:
 
-1. Certifique-se de que o serviço está em execução:
+1. Pull da imagem mais recente:
+   ```bash
+   docker pull ghcr.io/paulofcamara/oml-trabalho/prediction-service:latest
+   ```
+
+2. Execute o serviço:
    ```bash
    docker-compose up -d
    ```
 
-2. Envie requisições para o endpoint de predição:
+3. Verifique o status do serviço:
    ```bash
-   curl -X POST http://localhost:8000/predict -H "Content-Type: application/json" -d '{"data": [[30, 2, 1, 20000, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]}'
+   curl http://localhost:8000/health
    ```
 
-3. O serviço retornará a predição do modelo em formato JSON.
+4. Envie requisições para o endpoint de predição:
+   ```bash
+   curl -X POST http://localhost:8000/predict \
+     -H "Content-Type: application/json" \
+     -d '{"features": {
+       "LIMIT_BAL": 20000,
+       "SEX": 2,
+       "EDUCATION": 2,
+       "MARRIAGE": 1,
+       "AGE": 24,
+       "PAY_0": 2,
+       "PAY_2": 2,
+       "PAY_3": -1,
+       "PAY_4": -1,
+       "PAY_5": -2,
+       "PAY_6": -2,
+       "BILL_AMT1": 3913,
+       "BILL_AMT2": 3102,
+       "BILL_AMT3": 689,
+       "BILL_AMT4": 0,
+       "BILL_AMT5": 0,
+       "BILL_AMT6": 0,
+       "PAY_AMT1": 0,
+       "PAY_AMT2": 689,
+       "PAY_AMT3": 0,
+       "PAY_AMT4": 0,
+       "PAY_AMT5": 0,
+       "PAY_AMT6": 0
+     }}'
+   ```
 
-## Quick-Start
+5. O serviço retornará a predição em formato JSON:
+   ```json
+   {
+     "prediction": 1,
+     "probability": 0.75,
+     "threshold": 0.5
+   }
+   ```
 
-### Criar e ativar o ambiente Conda
+## Resultados do Modelo
 
-```bash
-conda env create -f conda.yaml
-conda activate oml-trabalho
-```
-
-### Instalar dependências com pip (opcional)
-
-Para utilizadores sem Conda:
-
-```bash
-pip install -r requirements.txt
-```
+O modelo final (Random Forest) alcançou:
+- Redução de custos de €3.9M para €2.47M
+- Features mais importantes: PAY_0 (status de pagamento atual) e AGE
+- Threshold otimizado: 0.3 para melhor equilíbrio custo/benefício
 
 ### Informações do Autor
 
