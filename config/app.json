@@ -1,0 +1,14 @@
+{
+    "model": {
+        "name": "bank_lending_model",
+        "stage": "Production",
+        "version": null
+    },
+    "mlflow": {
+        "tracking_uri": "http://mlflow-tracking-server:5000"
+    },
+    "server": {
+        "host": "0.0.0.0",
+        "port": 8000
+    }
+}
