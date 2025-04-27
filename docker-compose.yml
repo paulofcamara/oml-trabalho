@@ -20,14 +20,14 @@ services:
     build: .
     container_name: prediction-service
     ports:
-      - "8000:8000"
+      - "8080:8080"
     depends_on:
       mlflow-tracking-server:
         condition: service_healthy
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow-tracking-server:5000
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
       interval: 30s
       timeout: 10s
       retries: 3

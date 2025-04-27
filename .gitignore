@@ -1,36 +1,27 @@
 # Python
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
-*.whl
-*.egg
-*.egg-info/
+*$py.class
+
+# Distribution / packaging
 dist/
 build/
-*.manifest
-*.spec
+*.egg-info/
 
-# Conda
-*.conda
-*.env
-*.venv
+# Unit test / coverage reports
+htmlcov/
+.coverage
+.pytest_cache/
 
-# VSCode
-*.code-workspace
+# Environments
+.env
+.venv/
+env/
+venv/
 
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
-
-# Docker
-*.dockerignore
-Dockerfile
-.dockerignore
+# System files
+.DS_Store
+*.log
 
 # MLflow
 mlruns/
-mlflow/
-*.db
-mlruns.db
-mlflow.db
