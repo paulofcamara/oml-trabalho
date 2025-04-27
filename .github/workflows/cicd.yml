@@ -14,43 +14,54 @@ jobs:
   cicd:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      # First verify if files exist
+      - name: Check required files
+        run: |
+          if [ ! -f "./prediction-service/conda.yaml" ]; then
+            echo "conda.yaml not found in prediction-service directory"
+            exit 1
+          fi
+          if [ ! -f "./prediction-service/Dockerfile" ]; then
+            echo "Dockerfile not found in prediction-service directory"
+            exit 1
+          fi
 
-      - name: Start services
-        run: docker compose up -d
-
+      # Environment Setup
       - name: Set up Python Environment
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: prediction-service-env
-          environment-file: ./prediction-service/conda.yaml
+          environment-file: prediction-service/conda.yaml  # Updated path
           auto-activate-base: false
 
-      - name: Run Tests
+      # Testing Phase
+      - name: Run Python Tests
         shell: bash -l {0}
         working-directory: ./prediction-service
         run: |
           conda activate prediction-service-env
           pytest tests/ --cov=src --cov-report=xml
 
+      # Docker Setup and Build with proper path verification
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Docker Image
-        working-directory: ./prediction-service
+        working-directory: ./prediction-service  # Ensure we're in the right directory
         run: |
-          docker build . --file Dockerfile --tag ghcr.io/${{ github.repository }}/prediction-service:latest
-          docker push ghcr.io/${{ github.repository }}/prediction-service:latest
-        timeout-minutes: 10
+          docker build . -t ghcr.io/${{ github.repository_owner }}/prediction-service:latest
+          docker push ghcr.io/${{ github.repository_owner }}/prediction-service:latest
 
       - name: Cleanup
         if: always()
-        run: |
-          docker compose down
+        run: docker system prune -f
