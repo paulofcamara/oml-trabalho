@@ -1,0 +1,14 @@
+name: prediction-service-env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+    - pytest==7.3.1
+    - pytest-cov==4.1.0
+    - requests==2.31.0
+    - numpy==1.24.3
+    - pandas==2.0.2
+    - scikit-learn==1.2.2
