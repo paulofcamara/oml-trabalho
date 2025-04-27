@@ -17,33 +17,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # First verify if files exist
-      - name: Check required files
+      # Configure conda before environment setup
+      - name: Configure Conda
+        shell: bash -l {0}
         run: |
-          if [ ! -f "./prediction-service/conda.yaml" ]; then
-            echo "conda.yaml not found in prediction-service directory"
-            exit 1
-          fi
-          if [ ! -f "./prediction-service/Dockerfile" ]; then
-            echo "Dockerfile not found in prediction-service directory"
-            exit 1
-          fi
+          conda config --add channels defaults
+          conda config --set channel_priority strict
 
       # Environment Setup
       - name: Set up Python Environment
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: prediction-service-env
-          environment-file: prediction-service/conda.yaml  # Updated path
+          environment-file: prediction-service/conda.yaml
           auto-activate-base: false
+          channels: defaults,conda-forge
 
       # Testing Phase
       - name: Run Python Tests
         shell: bash -l {0}
-        working-directory: ./prediction-service
+        working-directory: ./
         run: |
           conda activate prediction-service-env
-          pytest tests/ --cov=src --cov-report=xml
+          pytest tests/ --cov=prediction-service/src --cov-report=xml
 
       # Docker Setup and Build with proper path verification
       - name: Set up Docker Buildx
