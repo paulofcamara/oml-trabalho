@@ -1,6 +1,6 @@
 # Avaliação do módulo de Operacionalização de Machine Learning - Projecto Individual
 
-## Rumos Bank going live
+## Rumos Bank Going Live
 
 O Rumos Bank é um banco que tem perdido bastante dinheiro devido à quantidade de créditos que fornece e que não são pagos dentro do prazo devido. 
 
@@ -50,31 +50,35 @@ Garantam que tanto o repositório do github como o package no github estão ambo
 
 ## Pipeline de CI/CD
 
-O projeto possui uma pipeline de CI/CD automatizada usando GitHub Actions, que inclui:
+O projeto inclui um pipeline de CI/CD completo que:
+- Executa testes automatizados com relatório de cobertura
+- Constrói e publica o container Docker no GitHub Container Registry
 
-### Etapas de Qualidade
-- Verificação de código com flake8
-- Formatação de código com black
-- Ordenação de imports com isort
-- Análise de segurança com bandit
+### Testes
 
-### Testes e Build
-- Execução de testes unitários com pytest
-- Build da imagem Docker
-- Teste do container em execução
-- Scan de vulnerabilidades com Trivy
+Os testes são executados automaticamente em cada push e pull request. O ambiente de testes inclui:
+- pytest com relatório de cobertura
+- Cliente de testes FastAPI
+- Testes de integração MLflow
 
-### Deploy
-- Push da imagem para GitHub Container Registry (GHCR)
-- Tagging automático com versão git e latest
-- Controle de versão e rastreabilidade
+Dependências necessárias para testes:
+```bash
+fastapi
+uvicorn
+httpx
+mlflow
+pytest
+pytest-cov
+```
 
-Para visualizar o status da pipeline:
-1. Acesse a aba "Actions" no GitHub
-2. As execuções são ativadas automaticamente em:
-   - Push para branch principal
-   - Pull Requests
-   - Tags
+### Implantação Docker
+
+A aplicação está containerizada e é publicada automaticamente no GitHub Container Registry após builds bem-sucedidos.
+Para baixar a imagem mais recente:
+
+```bash
+docker pull ghcr.io/<username>/prediction-service:latest
+```
 
 ## Configuração do MLflow
 
