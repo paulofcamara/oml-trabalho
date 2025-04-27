@@ -30,6 +30,14 @@ jobs:
     - name: Build Docker image
       run: docker build -t prediction-service:latest .
         
+    - name: Test Docker container
+      run: |
+        docker run -d -p 8000:8000 --name test-container prediction-service:latest
+        sleep 5  # Wait for container to start
+        curl -s --retry 3 --retry-delay 5 http://localhost:8000/health || (docker logs test-container && exit 1)
+        docker stop test-container
+        docker rm test-container
+
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
