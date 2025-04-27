@@ -1,23 +1,29 @@
 version: '3'
-
 services:
   mlflow-tracking-server:
-    image: ghcr.io/mlflow/mlflow:v2.11.0
-    container_name: mlflow-tracking-server
+    build:
+      context: .
+      dockerfile: mlflow.Dockerfile
     ports:
       - "5000:5000"
-    volumes:
-      - ./mlruns:/mlruns
-    command: mlflow server --host 0.0.0.0 --port 5000
+    environment:
+      - MLFLOW_TRACKING_URI=sqlite:///mlflow.db
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5000/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:5000" ]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 40s
+    volumes:
+      - ./mlruns:/mlruns
+      - ./mlflow.db:/mlflow.db
+    command: mlflow server --host 0.0.0.0 --port 5000
     restart: unless-stopped
 
   prediction-service:
-    build: .
+    build:
+      context: ./prediction-service
+      dockerfile: ../prediction.Dockerfile
     container_name: prediction-service
     ports:
       - "8080:8080"
