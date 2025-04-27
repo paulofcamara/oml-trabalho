@@ -2,22 +2,25 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  build:
+  cicd:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Start services
+        run: docker compose up -d
 
       - name: Set up Python Environment
         uses: conda-incubator/setup-miniconda@v2
@@ -26,42 +29,28 @@ jobs:
           environment-file: ./prediction-service/conda.yaml
           auto-activate-base: false
 
-      - name: Run Python Tests
+      - name: Run Tests
         shell: bash -l {0}
         working-directory: ./prediction-service
         run: |
           conda activate prediction-service-env
           pytest tests/ --cov=src --cov-report=xml
-        if: success()
 
-      - name: Build with Maven
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
         working-directory: ./prediction-service
         run: |
-          mvn -B clean verify
-        continue-on-error: false
-
-      - name: Run Tests
-        working-directory: ./prediction-service
-        run: |
-          mvn test
-        if: success()
-
-      - name: Build Docker Image
-        working-directory: ./prediction-service
-        run: |
-          docker build . --file Dockerfile --tag prediction-service:latest
+          docker build . --file Dockerfile --tag ghcr.io/${{ github.repository }}/prediction-service:latest
+          docker push ghcr.io/${{ github.repository }}/prediction-service:latest
         timeout-minutes: 10
-        if: success()
-
-      - name: Test Docker Image
-        run: |
-          docker run -d --name prediction-service prediction-service:latest
-          sleep 10
-          docker ps | grep prediction-service || exit 1
-        timeout-minutes: 5
-        if: success()
 
       - name: Cleanup
         if: always()
         run: |
-          docker rm -f prediction-service || true
+          docker compose down
