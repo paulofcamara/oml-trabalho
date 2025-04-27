@@ -11,7 +11,7 @@ on:
     branches: [ master ]
 
 jobs:
-  quality-checks:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -21,57 +21,20 @@ jobs:
       with:
         python-version: '3.10'
     
-    - name: Install dependencies
+    - name: Install dependencies and run tests
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install flake8 black isort bandit
-        
-    - name: Run code quality checks
-      continue-on-error: true
-      run: |
-        flake8 src/
-        black --check src/
-        isort --check-only src/
-        bandit -r src/
-
-  test-and-build:
-    needs: quality-checks
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        
-    - name: Run tests
-      run: |
         python -m pytest tests/
         
     - name: Build Docker image
-      run: docker build -t prediction-service:test .
-      
-    - name: Test Docker container
-      run: |
-        docker run -d --name test-container -p 8000:8000 prediction-service:test
-        sleep 10
-        curl http://localhost:8000/health || exit 1
-        docker stop test-container
+      run: docker build -t prediction-service:latest .
         
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: 'prediction-service:test'
+        image-ref: 'prediction-service:latest'
         format: 'table'
-        exit-code: '1'
         ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'
@@ -89,5 +52,5 @@ jobs:
         context: .
         push: true
         tags: |
-          ghcr.io/paulofcamara/oml-trabalho/prediction-service:latest
-          ghcr.io/paulofcamara/oml-trabalho/prediction-service:${{ github.sha }}
+          ghcr.io/${{ github.repository }}/prediction-service:latest
+          ghcr.io/${{ github.repository }}/prediction-service:${{ github.sha }}

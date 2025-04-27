@@ -3,17 +3,32 @@ version: '3'
 services:
   mlflow-tracking-server:
     image: ghcr.io/mlflow/mlflow:v2.11.0
+    container_name: mlflow-tracking-server
     ports:
       - "5000:5000"
     volumes:
       - ./mlruns:/mlruns
     command: mlflow server --host 0.0.0.0 --port 5000
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
 
   prediction-service:
     build: .
+    container_name: prediction-service
     ports:
       - "8000:8000"
     depends_on:
-      - mlflow-tracking-server
+      mlflow-tracking-server:
+        condition: service_healthy
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow-tracking-server:5000
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
