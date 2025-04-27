@@ -48,11 +48,21 @@ Garantam que tanto o repositório do github como o package no github estão ambo
         └── ci-cd.yml      # Pipeline de CI/CD
 ```
 
-## Pipeline de CI/CD
+## Configuração do MLflow
 
-O projeto inclui um pipeline de CI/CD completo que:
-- Executa testes automatizados com relatório de cobertura
-- Constrói e publica o container Docker no GitHub Container Registry
+O projeto utiliza MLflow para tracking de experimentos, com as seguintes configurações:
+
+- Tracking URI: `http://localhost:5000` (servidor remoto containerizado)
+- Experiment Name: "bank_lending_prediction"
+- Model Registry gerido remotamente no servidor MLflow
+
+Para inicializar o MLflow em notebooks:
+
+```python
+import mlflow
+mlflow.set_tracking_uri("http://localhost:5000")
+mlflow.set_experiment("bank_lending_prediction")
+```
 
 ### Testes
 
@@ -78,22 +88,6 @@ Para baixar a imagem mais recente:
 
 ```bash
 docker pull ghcr.io/<username>/prediction-service:latest
-```
-
-## Configuração do MLflow
-
-O projeto utiliza MLflow para tracking de experimentos, com as seguintes configurações:
-
-- Tracking URI: `http://localhost:5000` (servidor remoto containerizado)
-- Experiment Name: "bank_lending_prediction"
-- Model Registry gerido remotamente no servidor MLflow
-
-Para inicializar o MLflow em notebooks:
-
-```python
-import mlflow
-mlflow.set_tracking_uri("http://localhost:5000")
-mlflow.set_experiment("bank_lending_prediction")
 ```
 
 ## Serviço de Predição
@@ -161,6 +155,13 @@ O modelo final (Random Forest) alcançou:
 - Redução de custos de €3.9M para €2.47M
 - Features mais importantes: PAY_0 (status de pagamento atual) e AGE
 - Threshold otimizado: 0.3 para melhor equilíbrio custo/benefício
+
+## Pipeline de CI/CD
+
+O projeto inclui um pipeline de CI/CD completo que:
+- Executa testes automatizados com relatório de cobertura
+- Constrói e publica o container Docker no GitHub Container Registry
+
 
 ### Informações do Autor
 
