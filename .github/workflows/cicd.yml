@@ -39,7 +39,7 @@ jobs:
         working-directory: ./
         run: |
           conda activate prediction-service-env || exit 1
-          pip install fastapi uvicorn pytest pytest-cov
+          pip install fastapi uvicorn httpx pytest pytest-cov || exit 1
           pytest tests/ --cov=prediction-service/src --cov-report=xml
 
       # Docker Setup and Build with proper path verification
