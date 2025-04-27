@@ -1,5 +1,5 @@
 # Usa a imagem oficial do Miniconda como base
-FROM continuumio/miniconda3
+FROM miniconda/miniconda3:latest
 
 # Define o diretório de trabalho no contentor
 WORKDIR /app

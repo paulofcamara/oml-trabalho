@@ -43,4 +43,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Enviar imagem serviço para o repositório do GitHub
-        run: docker push ghcr.io/${{ github.repository }}/prediction-service:latest
+        run: docker push ghcr.io/paulofcamara/prediction-service:latest
