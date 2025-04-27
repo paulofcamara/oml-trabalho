@@ -23,6 +23,14 @@ jobs:
       run: |
         cd prediction-service
         mvn clean package -DskipTests
+        ls -la target/
+    
+    - name: Debug directory contents
+      run: |
+        pwd
+        ls -R prediction-service/target/
     
     - name: Build and push Docker images
-      run: docker compose build
+      run: |
+        cd ..
+        docker compose build
